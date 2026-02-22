@@ -117,7 +117,7 @@ export default async function CheckoutPage({ params }: PageProps) {
                                 <span className="total-price">${plan.price}</span>
                             </div>
 
-                            <Link href="/payment" className="checkout-proceed-btn">
+                            <Link href={`/payment?plan=${plan!.slug}`} className="checkout-proceed-btn">
                                 Proceed to Payment →
                             </Link>
 
