@@ -31,8 +31,9 @@ export async function POST(req: Request) {
         }
 
         if (!apiKey) {
+            console.error('CRITICAL: OBLIQPAY_API_KEY is not defined in environment variables.');
             return NextResponse.json(
-                { error: 'Payment gateway not configured' },
+                { error: 'Payment gateway not configured: OBLIQPAY_API_KEY is missing in server environment variables.' },
                 { status: 500 }
             );
         }
