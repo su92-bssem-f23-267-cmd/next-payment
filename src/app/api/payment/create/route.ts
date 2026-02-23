@@ -38,28 +38,41 @@ export async function POST(req: Request) {
             );
         }
 
-        console.log('Using API Key starting with:', apiKey.substring(0, 5) + '...');
+        // Split name into first and last name for better processor compatibility
+        const nameParts = customerName.trim().split(/\s+/);
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || 'Customer';
+
+        console.log('Environment Debug:', {
+            hasApiKey: !!apiKey,
+            apiKeyPrefix: apiKey.substring(0, 5),
+            apiUrl,
+            siteUrl,
+            nodeEnv: process.env.NODE_ENV
+        });
 
         const orderPayload = {
             amount: amount,
-            currency: 'usd', // Use lowercase as per API documentation
-            email: customerEmail, // Top-level email field as per API documentation
-            customer: {
-                name: customerName,
-                email: customerEmail,
-            },
+            currency: 'usd',
+            email: customerEmail,
+            first_name: firstName,
+            last_name: lastName,
             redirect_url: `${siteUrl}/thank-you`,
             webhook_url: `${siteUrl}/api/payment/webhook`,
-            note: `Rank Boost Pro - ${planName}`,
+            note: `Rank Boost Pro - ${planName} (${customerName})`,
         };
 
-        console.log('Initiating ObliqPay order with payload:', JSON.stringify(orderPayload, null, 2));
+        console.log('Initiating ObliqPay v3 order:', {
+            url: `${apiUrl}/orders`,
+            payload: orderPayload
+        });
 
         const response = await fetch(`${apiUrl}/orders`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify(orderPayload),
         });
