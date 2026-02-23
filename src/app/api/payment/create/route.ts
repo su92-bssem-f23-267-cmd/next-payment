@@ -42,7 +42,8 @@ export async function POST(req: Request) {
 
         const orderPayload = {
             amount: amount,
-            currency: 'USD',
+            currency: 'usd', // Use lowercase as per API documentation
+            email: customerEmail, // Top-level email field as per API documentation
             customer: {
                 name: customerName,
                 email: customerEmail,
