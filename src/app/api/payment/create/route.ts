@@ -38,31 +38,31 @@ export async function POST(req: Request) {
             );
         }
 
-        // Split name into first and last name for better processor compatibility
-        const nameParts = customerName.trim().split(/\s+/);
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || 'Customer';
+        const isProduction = process.env.NODE_ENV === 'production';
+        const isLocalUrl = siteUrl.includes('localhost') || siteUrl.includes('127.0.0.1');
+
+        if (isProduction && isLocalUrl) {
+            console.warn('WARNING: NEXT_PUBLIC_SITE_URL is set to localhost in a production environment. Redirection will likely fail.');
+        }
 
         console.log('Environment Debug:', {
             hasApiKey: !!apiKey,
-            apiKeyPrefix: apiKey.substring(0, 5),
             apiUrl,
             siteUrl,
-            nodeEnv: process.env.NODE_ENV
+            isProduction,
+            isLocalUrl
         });
 
         const orderPayload = {
-            amount: amount,
+            amount: parseFloat(amount.toFixed(2)),
             currency: 'usd',
             email: customerEmail,
-            first_name: firstName,
-            last_name: lastName,
             redirect_url: `${siteUrl}/thank-you`,
             webhook_url: `${siteUrl}/api/payment/webhook`,
-            note: `Rank Boost Pro - ${planName} (${customerName})`,
+            note: `Plan: ${planName} | Customer: ${customerName}`,
         };
 
-        console.log('Initiating ObliqPay v3 order:', {
+        console.log('Initiating Canonical ObliqPay v3 order:', {
             url: `${apiUrl}/orders`,
             payload: orderPayload
         });
