@@ -1364,3 +1364,129 @@ body {
   justify-content: center;
   margin-top: 1rem;
 }
+
+/* Payment Page Layout */
+.payment-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.payment-form-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.payment-form-header {
+  margin-bottom: 2rem;
+}
+
+.payment-form-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.payment-form-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.payment-step-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.payment-summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  padding: 2.25rem;
+  position: sticky;
+  top: 6rem;
+}
+
+.payment-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.back-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--text-primary);
+}
+
+@media (max-width: 1024px) {
+  .payment-wrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .payment-summary-card {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-form-card {
+    padding: 1.5rem;
+  }
+
+  .payment-form-header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-method-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .method-badge {
+    align-self: flex-start;
+  }
+}

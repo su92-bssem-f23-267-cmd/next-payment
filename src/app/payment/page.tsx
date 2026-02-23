@@ -118,14 +118,14 @@ function PaymentForm() {
                                     <div className="method-info">
                                         <div className="method-icon">🏦</div>
                                         <div className="method-text">
-                                            <span className="method-title">ObliqPay Secure Gateway</span>
+                                            <span className="method-title">Secure Payment Gateway</span>
                                             <span className="method-desc">Pay via Credit Card, Crypto, or Net Banking</span>
                                         </div>
                                     </div>
                                     <div className="method-badge">Selected</div>
                                 </div>
                                 <p className="payment-notice">
-                                    🔒 You will be redirected to ObliqPay&apos;s encrypted portal to complete your transaction securely.
+                                    🔒 You will be redirected to an encrypted portal to complete your transaction securely.
                                 </p>
                             </div>
 
