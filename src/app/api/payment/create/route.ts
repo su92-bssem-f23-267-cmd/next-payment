@@ -3,18 +3,32 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { planSlug, planName, planPrice, customerEmail } = body;
+        const { planSlug, planName, planPrice, customerEmail, customerName } = body;
 
-        if (!planSlug || !planPrice || !customerEmail) {
+        if (!planSlug || !planPrice || !customerEmail || !customerName) {
             return NextResponse.json(
-                { error: 'Missing required fields: planSlug, planPrice, customerEmail' },
+                { error: 'Missing required fields: planSlug, planPrice, customerEmail, customerName' },
+                { status: 400 }
+            );
+        }
+
+        // Validate amount and currency
+        const amount = Number(planPrice);
+        if (isNaN(amount) || amount <= 0) {
+            return NextResponse.json(
+                { error: 'Invalid amount: must be greater than 0' },
                 { status: 400 }
             );
         }
 
         const apiKey = process.env.OBLIQPAY_API_KEY;
         const apiUrl = process.env.OBLIQPAY_API_URL || 'https://api.obliqpay.com';
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
+        let siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
+
+        // Ensure siteUrl doesn't have a trailing slash for consistent URL building
+        if (siteUrl.endsWith('/')) {
+            siteUrl = siteUrl.slice(0, -1);
+        }
 
         if (!apiKey) {
             return NextResponse.json(
@@ -23,19 +37,26 @@ export async function POST(req: Request) {
             );
         }
 
+        console.log('Using API Key starting with:', apiKey.substring(0, 5) + '...');
+
         const orderPayload = {
-            amount: planPrice,
-            currency: 'usd',
-            email: customerEmail,
-            note: `Rank Boost Pro – ${planName}`,
-            redirect_url: `${siteUrl}/payment-success?plan=${planSlug}`,
+            amount: amount,
+            currency: 'USD',
+            customer: {
+                name: customerName,
+                email: customerEmail,
+            },
+            redirect_url: `${siteUrl}/thank-you`,
             webhook_url: `${siteUrl}/api/payment/webhook`,
+            note: `Rank Boost Pro - ${planName}`,
         };
+
+        console.log('Initiating ObliqPay order with payload:', JSON.stringify(orderPayload, null, 2));
 
         const response = await fetch(`${apiUrl}/orders`, {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(orderPayload),
@@ -44,9 +65,13 @@ export async function POST(req: Request) {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('ObliqPay error:', data);
+            console.error('ObliqPay API Error:', {
+                status: response.status,
+                statusText: response.statusText,
+                data: JSON.stringify(data, null, 2)
+            });
             return NextResponse.json(
-                { error: data?.message || 'Payment initiation failed' },
+                { error: data?.message || data?.error || 'Payment initiation failed' },
                 { status: response.status }
             );
         }

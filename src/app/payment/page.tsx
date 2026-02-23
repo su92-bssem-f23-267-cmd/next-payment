@@ -68,61 +68,65 @@ function PaymentForm() {
             <div className="container">
                 <div className="payment-wrapper">
 
-                    {/* Left: Form */}
+                    {/* Left: Billing & Method */}
                     <div className="payment-form-card">
                         <div className="payment-form-header">
                             <span className="payment-step-badge">Step 2 of 2</span>
-                            <h1>Complete Your Payment</h1>
-                            <p>Enter your details to proceed to our secure payment gateway.</p>
+                            <h1>Payment Information</h1>
+                            <p>Complete your billing details to proceed to secure checkout.</p>
                         </div>
 
-                        {/* Plan selector (if no plan in URL) */}
-                        {!plan && (
-                            <div className="payment-plan-select">
-                                <label>Select Plan</label>
-                                <select
-                                    value={selectedSlug}
-                                    onChange={(e) => setSelectedSlug(e.target.value)}
-                                    className="payment-select"
-                                >
-                                    {PLANS.map((p) => (
-                                        <option key={p.slug} value={p.slug}>
-                                            {p.name} — ${p.price}/mo
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        )}
-
                         <form onSubmit={handleSubmit} className="payment-form" noValidate>
-                            <div className="form-group">
-                                <label htmlFor="customer-name">Full Name</label>
-                                <input
-                                    id="customer-name"
-                                    type="text"
-                                    placeholder="Your full name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="form-input"
-                                    autoComplete="name"
-                                />
+                            {/* Billing Section */}
+                            <div className="payment-section-group">
+                                <h3 className="section-subtitle-small">👤 Billing Information</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="customer-name">Full Name</label>
+                                        <input
+                                            id="customer-name"
+                                            type="text"
+                                            placeholder="John Doe"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            className="form-input"
+                                            autoComplete="name"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="customer-email">
+                                            Email Address <span style={{ color: 'var(--accent-primary)' }}>*</span>
+                                        </label>
+                                        <input
+                                            id="customer-email"
+                                            type="email"
+                                            placeholder="john@example.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            className="form-input"
+                                            autoComplete="email"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="customer-email">
-                                    Email Address <span style={{ color: 'var(--accent-primary)' }}>*</span>
-                                </label>
-                                <input
-                                    id="customer-email"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="form-input"
-                                    autoComplete="email"
-                                />
-                                <span className="form-hint">Your receipt will be sent to this email</span>
+                            {/* Payment Method Preview (Redirect Notice) */}
+                            <div className="payment-section-group" style={{ marginTop: '1.5rem' }}>
+                                <h3 className="section-subtitle-small">💳 Secure Payment Method</h3>
+                                <div className="payment-method-selector active">
+                                    <div className="method-info">
+                                        <div className="method-icon">🏦</div>
+                                        <div className="method-text">
+                                            <span className="method-title">ObliqPay Secure Gateway</span>
+                                            <span className="method-desc">Pay via Credit Card, Crypto, or Net Banking</span>
+                                        </div>
+                                    </div>
+                                    <div className="method-badge">Selected</div>
+                                </div>
+                                <p className="payment-notice">
+                                    🔒 You will be redirected to ObliqPay&apos;s encrypted portal to complete your transaction securely.
+                                </p>
                             </div>
 
                             {error && (
@@ -135,68 +139,75 @@ function PaymentForm() {
                                 type="submit"
                                 className="checkout-proceed-btn"
                                 disabled={loading || !email}
-                                style={{ opacity: loading || !email ? 0.7 : 1, cursor: loading || !email ? 'not-allowed' : 'pointer' }}
                             >
                                 {loading ? (
                                     <>
-                                        <span className="spinner" /> Redirecting to Payment…
+                                        <span className="spinner" /> Securely Redirecting...
                                     </>
                                 ) : (
-                                    <>🔐 Pay ${activePlan?.price} Securely</>
+                                    <>Proceed to Secure Payment →</>
                                 )}
                             </button>
 
-                            <div className="checkout-guarantees" style={{ justifyContent: 'center', marginTop: '1rem' }}>
-                                <div className="guarantee-item">🔒 256-bit SSL</div>
-                                <div className="guarantee-item">💳 ObliqPay Secured</div>
-                                <div className="guarantee-item">✅ Instant Access</div>
+                            <div className="checkout-guarantees" style={{ justifyContent: 'center', marginTop: '1.25rem' }}>
+                                <div className="guarantee-item">🛡️ 256-bit Encryption</div>
+                                <div className="guarantee-item">🔒 PCI-DSS Compliant</div>
+                                <div className="guarantee-item">✅ Verified Merchant</div>
                             </div>
                         </form>
 
-                        <Link href={activePlan ? `/checkout/${activePlan.slug}` : '/#pricing'} className="back-link">
-                            ← Back to Order Summary
-                        </Link>
+                        <div className="payment-support-links">
+                            <Link href={activePlan ? `/checkout/${activePlan.slug}` : '/#pricing'} className="back-link">
+                                ← Back to Order Summary
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Right: Order summary */}
                     <div className="payment-summary-card">
-                        <h3>📋 Order Summary</h3>
-                        <div className="order-plan-name">{activePlan?.name}</div>
-                        <p className="order-plan-desc">{activePlan?.description}</p>
-
-                        <div className="order-line">
-                            <span className="label">Plan</span>
-                            <span className="value">{activePlan?.name}</span>
-                        </div>
-                        <div className="order-line">
-                            <span className="label">Billing</span>
-                            <span className="value">Monthly</span>
-                        </div>
-                        <div className="order-line">
-                            <span className="label">Setup Fee</span>
-                            <span className="value" style={{ color: 'var(--accent-green)' }}>Free</span>
+                        <div className="summary-header">
+                            <h3>📋 Order Summary</h3>
+                            <button className="summary-edit-btn" onClick={() => router.push('/#pricing')}>Edit</button>
                         </div>
 
-                        <div className="order-total">
-                            <span className="total-label">Total / month</span>
-                            <span className="total-price">${activePlan?.price}</span>
-                        </div>
-
-                        {/* Contact fallback */}
-                        <div className="payment-contact" style={{ marginTop: '1.5rem' }}>
-                            <h4>💬 Need Help?</h4>
-                            <div className="payment-contact-items">
-                                <div className="payment-contact-item">
-                                    <span className="icon">✉️</span>
-                                    <a href="mailto:Toniaflora2024@gmail.com">Toniaflora2024@gmail.com</a>
-                                </div>
-                                <div className="payment-contact-item">
-                                    <span className="icon">💬</span>
-                                    <a href="https://t.me/+12798007315" target="_blank" rel="noopener noreferrer">
-                                        Telegram: +1 (279) 800-7315
-                                    </a>
-                                </div>
+                        <div className="summary-plan-blob">
+                            <div className="summary-plan-info">
+                                <span className="plan-name-label">{activePlan?.name}</span>
+                                <span className="plan-cycle">Billed Monthly</span>
                             </div>
+                            <span className="plan-price-label">${activePlan?.price}</span>
+                        </div>
+
+                        <div className="summary-details">
+                            <div className="summary-line">
+                                <span>Subtotal</span>
+                                <span>${activePlan?.price}.00</span>
+                            </div>
+                            <div className="summary-line">
+                                <span>Tax</span>
+                                <span>$0.00</span>
+                            </div>
+                            <div className="summary-total">
+                                <span>Amount due today</span>
+                                <span className="total-value">${activePlan?.price}.00</span>
+                            </div>
+                        </div>
+
+                        <div className="trust-badges-grid">
+                            <div className="trust-badge">
+                                <span className="badge-icon">⭐</span>
+                                <span className="badge-text">5.0 / 5 Rating</span>
+                            </div>
+                            <div className="trust-badge">
+                                <span className="badge-icon">💎</span>
+                                <span className="badge-text">Premium Service</span>
+                            </div>
+                        </div>
+
+                        {/* Contact info within summary for easy access */}
+                        <div className="summary-help">
+                            <p>Need assistance? Contact our 24/7 billing support team.</p>
+                            <a href="mailto:support@rankboostpro.com" className="help-link">support@rankboostpro.com</a>
                         </div>
                     </div>
 
