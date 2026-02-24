@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { PLANS } from '@/lib/plans';
 
-const PLAN_ICONS = ['⚡', '🚀', '💎', '🏆', '👑'];
+const PLAN_ICONS = ['⚡', '🚀', '💎', '🏆', '👑', '🌐', '🔥'];
 
 export default function PricingSection() {
     return (

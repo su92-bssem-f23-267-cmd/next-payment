@@ -50,7 +50,24 @@ function PaymentForm() {
             const data = await res.json();
 
             if (!res.ok || !data.checkoutUrl) {
-                setError(data.error || 'Payment failed. Please try again.');
+                console.error('Payment API Error Status:', res.status);
+                console.error('Payment API Error Data:', data);
+
+                let errorMessage = 'Payment failed. Please try again.';
+                if (typeof data.error === 'string') {
+                    errorMessage = data.error;
+                } else if (Array.isArray(data.error)) {
+                    errorMessage = data.error[0]?.msg || JSON.stringify(data.error[0]);
+                } else if (typeof data.error === 'object' && data.error !== null) {
+                    errorMessage = data.error.message || data.error.detail || JSON.stringify(data.error);
+                }
+
+                // Extra safety: ensure errorMessage is never an object
+                if (typeof errorMessage !== 'string') {
+                    errorMessage = String(errorMessage);
+                }
+
+                setError(errorMessage);
                 setLoading(false);
                 return;
             }
