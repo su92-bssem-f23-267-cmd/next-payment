@@ -86,7 +86,7 @@ export async function POST(req: Request) {
                 data: JSON.stringify(data, null, 2)
             });
             return NextResponse.json(
-                { error: data?.message || data?.error || 'Payment initiation failed' },
+                { error: data?.detail || data?.message || data?.error || 'Payment initiation failed' },
                 { status: response.status }
             );
         }
