@@ -41,7 +41,7 @@ function PaymentForm() {
                 body: JSON.stringify({
                     planSlug: activePlan.slug,
                     planName: activePlan.name,
-                    planPrice: activePlan.price,
+                    planPrice: (activePlan.price * 1.2).toFixed(2),
                     customerEmail: email,
                     customerName: name,
                 }),
@@ -184,12 +184,12 @@ function PaymentForm() {
                                 <span>${activePlan?.price}.00</span>
                             </div>
                             <div className="summary-line">
-                                <span>Tax</span>
-                                <span>$0.00</span>
+                                <span>Tax (20%)</span>
+                                <span>${activePlan ? (activePlan.price * 0.2).toFixed(2) : '0.00'}</span>
                             </div>
                             <div className="summary-total">
                                 <span>Amount due today</span>
-                                <span className="total-value">${activePlan?.price}.00</span>
+                                <span className="total-value">${activePlan ? (activePlan.price * 1.2).toFixed(2) : '0.00'}</span>
                             </div>
                         </div>
 

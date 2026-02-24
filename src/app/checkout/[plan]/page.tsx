@@ -100,21 +100,17 @@ export default async function CheckoutPage({ params }: PageProps) {
                             <p className="order-plan-desc">{plan.description}</p>
 
                             <div className="order-line">
-                                <span className="label">Plan</span>
-                                <span className="value">{plan.name}</span>
+                                <span className="label">Subtotal</span>
+                                <span className="value">${plan.price}</span>
                             </div>
                             <div className="order-line">
-                                <span className="label">Billing cycle</span>
-                                <span className="value">Monthly</span>
-                            </div>
-                            <div className="order-line">
-                                <span className="label">Setup fee</span>
-                                <span className="value" style={{ color: 'var(--accent-green)' }}>Free</span>
+                                <span className="label">Tax (20%)</span>
+                                <span className="value">${(plan.price * 0.2).toFixed(2)}</span>
                             </div>
 
                             <div className="order-total">
                                 <span className="total-label">Total / month</span>
-                                <span className="total-price">${plan.price}</span>
+                                <span className="total-price">${(plan.price * 1.2).toFixed(2)}</span>
                             </div>
 
                             <Link href={`/payment?plan=${plan!.slug}`} className="checkout-proceed-btn">
